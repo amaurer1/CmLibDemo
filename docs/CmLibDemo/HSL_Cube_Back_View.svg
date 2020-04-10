@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<svg
+	version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+	viewBox="-15 -10 125 125" width="300" height="300" style="background-color:gray; user-select:none;" >
+   <!-- Image -->
+   <image xlink:href="HSL_Cube_Back_View.png" x="0" y="0" height="100" width="100" />
+   <path d="M0, 100 75, 100 75, 25 0, 25Z M75, 100 100, 75 100, 0 75, 25 M100, 0 25, 0 0, 25" fill="none" stroke="black" stroke-linejoin="round" stroke-width="0.25px" />
+   <!-- H axis -->
+   <g transform="translate(0, 105)">
+      <path d="M0.0, 0.0 5.0, -2.0 5.0, -0.5 75.0, -0.5 75.0, 0.5 5.0, 0.5 5.0, 2.0" fill="black" />
+      <svg x="0" y="0" width="75px" height="10px" viewBox="0 0 75 10">
+         <text x="50%" y="50%" font-family="Arial" font-size="6" font-weight="800" dominant-baseline="central" text-anchor="middle">H</text>
+      </svg>
+   </g>
+   <!-- L axis -->
+   <g transform="translate(-5, 25) rotate(90)">
+      <path d="M0.0, -0.5 70.0, -0.5 70.0, -2.0 75.0, 0.0 70.0, 2.0 70.0, 0.5 0.0, 0.5" fill="black" />
+      <svg x="0" y="0" width="75px" height="10px" viewBox="0 0 75 10">
+         <text x="50%" y="50%" font-family="Arial" font-size="6" font-weight="800" dominant-baseline="central" text-anchor="middle" transform="rotate(-90, 37.5, 5)">L</text>
+      </svg>
+   </g>
+   <!-- S axis -->
+   <g transform="translate(78.5, 103.5) rotate(-45)">
+      <path d="M0.0 -0.5 30.4, -0.5 30.4, -2.0 35.4, 0.0 30.4, 2.0 30.4, 0.5 0.0, 0.5" fill="black" />
+      <svg x="0" y="0" width="35.4px" height="10px" viewBox="0 0 35.4 10">
+         <text x="50%" y="50%" font-family="Arial" font-size="6" font-weight="800" dominant-baseline="central" text-anchor="middle" transform="rotate(45, 17.7, 5)">S</text>
+      </svg>
+   </g>
+</svg>
