@@ -500,10 +500,10 @@
       The <b>CmLibDemo</b> project introduces the C++ template libraries <b>Color.h</b> and <b>ColorModels.h</b>.
    </p>
    <p>
-      <b>Color.h</b> contains the generic data structure <b>TColor</b> and user defined operators for arithmetic operation with this type.
+      <b>Color.h</b> contains the generic data structure <b>ama::Color</b> and user defined operators for arithmetic operations with this type.
    </p>
    <p>
-      <b>ColorModels.h</b> contains the generic data structures <b>TRgb</b> (an alias for <b>TColor</b>),  <b>THsv</b>, <b>THsl</b>, <b>THsg</b> and <b>THsp</b> and the respective conversion functions to and from <b>TRgb</b>.
+      <b>ColorModels.h</b> contains the generic data structures <b>ama::Rgb</b> (an alias for <b>ama::Color</b>),  <b>ama::Hsv</b>, <b>ama::Hsl</b>, <b>ama::Hsg</b> and <b>ama::Hsp</b> and the respective conversion functions to and from <b>ama::Rgb</b>.
       The data structures can be instantiated with any data type, but if they are used together with the conversion functions, it must be a floating point type.
       The conversion functions always operate in the range from 0.0 to 1.0 for each parameter of the involved data structures.
    </p>
@@ -592,7 +592,7 @@
    </ul>
    <hr />
    <p>
-      Copyright © 2020 by Adrian Maurer. All Rights reserved.
+      Copyright © 2022 by Adrian Maurer. All Rights reserved.
    </p>
 </body>
 </html>
