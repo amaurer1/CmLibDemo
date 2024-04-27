@@ -113,7 +113,10 @@ template <class T>
 inline std::wstring convertToString(const T n, const int p = 0)
 requires std::floating_point<T>
 {
-	return std::format(!p ? L"{:.0f}" : std::format(L"{{:.{}g}}", p), n);
+	constexpr int nss = std::numeric_limits<T>::digits10 + 10; // Number string size
+	std::wstring ns(nss, '\0'); // Number string
+	::swprintf_s(&ns[0], nss, !p ? L"%.0f" : std::format(L"%.{}g", p).data(), n);
+	return ns;
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // TNumberEdit
@@ -254,7 +257,7 @@ template <class T>
 requires number<T>
 inline void TNumberEdit<T>::setNumber(const T n, const bool che)
 {
-   numberValid = true;
+	numberValid = true;
 	setText(convertToString(n, precision), che);
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -355,7 +358,7 @@ requires std::floating_point<T>
 		const wstring ns(getText()); // Number string
 		if (const T n = convertToNumber<T>(ns); n >= limit1 && n <= limit2) // Number
 		{
-			const size_t ep = wcscspn(ns.data(), L"eE"); // Exponent position
+			const size_t ep = ::wcscspn(ns.data(), L"eE"); // Exponent position
 			const wstring bs(ns.substr(0, ep)); // Basis string
 			const wstring es(ns.substr(ep, ns.size() - ep)); // Exponent string
 			const size_t pp = bs.find_first_of('.'); // Point position
@@ -363,7 +366,9 @@ requires std::floating_point<T>
 			const T bn = convertToNumber<T>(bs); // Basis number
 			const T is = T(1.0) / static_cast<T>(pow(10, p)); // Increment step
 			const T ibn = !dir ? bn - is : bn + is; // Incremented basis number
-			const wstring ins = format(format(L"{{:.{}f}}{{}}", p), ibn, es); // Incremented number string
+			constexpr int inss = numeric_limits<T>::digits10 + 10; // Incremented number string size
+			wstring ins(inss, '\0'); // Incremented number string
+			::swprintf_s(&ins[0], inss, format(L"%.{}f%s", p).data(), ibn, es.data());
 			if (const T in = convertToNumber<T>(ins); in >= limit1 && in <= limit2) // Incremented number
 			{
 				const int cp = static_cast<int>(ins.length()) - (static_cast<int>(ns.length()) - LOWORD(GetSel()));
@@ -433,7 +438,7 @@ inline void TNumberEdit<T>::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			if (!ctrl) increment(false, !shift ? increment1 : increment2);
 			else if (!shift) incrementLastDigit(false);
 			return;
-      }
+		}
 		else if (nChar == VK_UP)
 		{
 			if (!ctrl) increment(true, !shift ? increment1 : increment2);
