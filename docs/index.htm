@@ -11,7 +11,7 @@
    </h1>
    <p>
       Color models specify colors with three parameters.
-      Besides the device color model RGB, we have several user oriented color models like HSV or HSL.
+      Besides the device oriented color model RGB, there are several user oriented color models like HSV or HSL.
       In addition, I would like to present the new color models HSG and HSP.
       HSG applies the theories of Harald Kueppers and HSP incorporates the perceived brightness.
       An open source library with conversion routines and the related project CmLibDemo is available on GitHub.
@@ -387,11 +387,11 @@
       </table>
       <figcaption>Tab. 2: The base colors with their respective perceived brightness values</figcaption>
    </figure>
-   <p>
-      In HSL the influence of the Saturation has its maximum always at Lightness = 50%.
-      But in HSP the influence of the Saturation has its maximum, if the Perceived Brightness corresponds to the perceived brightness value of the <u>corresponding pure chromatic color</u>.
-      You can see this difference very well if you compare figure 7 with figure 11.
-   </p>
+	<p>
+		In HSL the influence of the Saturation has its maximum always at Lightness = 50%.
+		But in HSP the influence of the Saturation has its maximum, if the Perceived Brightness corresponds to the perceived brightness value of the <u>corresponding pure chromatic color</u>.
+		This becomes obvious by comparing  figure 7 with figure 11.
+	</p>
    <p>
       <figure style="float: left;">
          <object data="CmLibDemo/HSP_Cube_Front_View.svg" width="300" height="300" title="HSP cube front view"></object>
@@ -460,7 +460,7 @@
    </p>
    <p>
       Figures 20-23 show Hue variations using HSP.
-      Alterations of the Hue no longer lead to a change of the perceived brightness values, which better preserves the character of the image.
+      Alterations of the Hue no longer lead to a change of the perceived brightness values, which better preserves the original character of the image.
    </p>
    <p>
       <figure style="float: left;">
@@ -595,7 +595,7 @@
    </ul>
    <hr />
    <p>
-      Copyright © 2022 by Adrian Maurer. All Rights reserved.
+      Copyright © 2024 by Adrian Maurer. All Rights reserved.
    </p>
 </body>
 </html>
