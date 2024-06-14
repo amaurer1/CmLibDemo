@@ -1,0 +1,639 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+   <meta charset="utf-8" />
+   <title>The HSG and HSP Color Models</title>
+   <link rel="StyleSheet" type="text/css" href="style.css" />
+</head>
+<body>
+	<h1>
+		The HSG and HSP Color Models
+	</h1>
+	<p>
+		Color models enable the definition of colors by using three parameters.
+		Besides the device oriented color model RGB, there are the user oriented color models <a href="https://en.wikipedia.org/wiki/HSL_and_HSV">HSV and HSL</a>.
+		In this article, I would like to present the two color models HSG and HSP.
+		<ul>
+			<li>HSG applies the theories of the color scientist <a href="http://kuepperscolor.farbaks.de/en/farbentheorie/mathematische_ordnung_der_farben.html">Harald Kueppers</a></li>
+			<li>HSP is a new color model which incorporates the perceived brightness</li>
+		</ul>
+		An open source library with conversion routines and the related project CmLibDemo is available on GitHub.
+	</p>
+	<div class="contents">
+		<ul>
+			<li>Contents</li>
+			<li><a href="#The RGB Color Model">The RGB Color Model</a></li>
+			<li><a href="#User Oriented Color Models">User Oriented Color Models</a></li>
+			<li><a href="#The HSV Color Model">The HSV Color Model</a></li>
+			<li><a href="#The HSL Color Model">The HSL Color Model</a></li>
+			<li><a href="#The HSG Color Model">The HSG Color Model</a></li>
+			<li><a href="#Perceived Brightness">Perceived Brightness</a></li>
+			<li><a href="#The HSP Color Model">The HSP Color Model</a></li>
+			<li><a href="#Usage Examples">Usage Examples</a></li>
+			<li><a href="#Project">Project</a></li>
+		</ul>
+	</div>
+	<h2 id="The RGB Color Model">
+		The RGB Color Model
+	</h2>
+	<table>
+		<tr>
+			<td colspan="2">Parameter</td>
+			<td>Range</td>
+		</tr>
+		<tr>
+			<td>R</td>
+			<td>Red</td>
+			<td>0 - 255</td>
+		</tr>
+		<tr>
+			<td>G</td>
+			<td>Green</td>
+			<td>0 - 255</td>
+		</tr>
+		<tr>
+			<td>B</td>
+			<td>Blue</td>
+			<td>0 - 255</td>
+		</tr>
+	</table>
+	<p>
+		The standard color model for computer monitors is RGB.
+		Its parameters define the intensities of the three primary colors red, green and blue.
+		A color is created by additive color mixing of this primaries.
+		The three parameters are completely independent of each other, any combination leads to a unique color.
+	</p>
+	<p>
+		<figure style="float: left;">
+			<img src="CmLibDemo_files/RGB_Cube_Front_View.svg" width="300" height="300" title="RGB cube front view" />
+			<figcaption>Fig. 1: RGB cube front view</figcaption>
+		</figure>
+		<figure>
+			<img src="CmLibDemo_files/RGB_Cube_Back_View.svg" width="300" height="300" title="RGB cube back view" />
+			<figcaption>Fig. 2: RGB cube back view</figcaption>
+		</figure>
+	</p>
+	<h2 id="User Oriented Color Models">
+		User Oriented Color Models
+	</h2>
+	<p>
+		For the purpose of a more intuitive color definition than in RGB, there are some alternatives.
+		The following sections present an overview about these color models.
+		First we'll have a look at the well known color models HSV and HSL, then we'll get to know the two new color models HSG and HSP.
+	</p>
+	<h2 id="The HSV Color Model">
+		The HSV Color Model
+	</h2>
+	<table>
+		<tr>
+			<td colspan="2">Parameter</td>
+			<td>Range</td>
+		</tr>
+		<tr>
+			<td>H</td>
+			<td>Hue</td>
+			<td>0 - 360°</td>
+		</tr>
+		<tr>
+			<td>S</td>
+			<td>Saturation</td>
+			<td>0 - 100%</td>
+		</tr>
+		<tr>
+			<td>V</td>
+			<td>Value</td>
+			<td>0 - 100%</td>
+		</tr>
+	</table>
+	<h3>
+		The Hue
+	</h3>
+	<p>
+		The Hue parameter defines the pure chromatic color.
+		Figure 3 shows an RGB cube in which the gray scale axis points to the observer.
+		Along the outer edges you can see the course of the pure chromatic colors.
+		Derived from this is the color hexagon which can be used to create color compostions (Figure 4).
+	</p>
+	<p>
+		<figure style="float: left;">
+			<img src="CmLibDemo_files/RGB_Cube_Hue_View.png" width="300" height="300" title="RGB cube Hue view" />
+			<figcaption>Fig. 3: RGB cube Hue view</figcaption>
+		</figure>
+		<figure>
+			<img src="CmLibDemo_files/Color_Hexagon.png" width="300" height="300" title="Color Hexagon" />
+			<figcaption>Fig. 4: Color hexagon</figcaption>
+		</figure>
+	</p>
+	<p>
+		Since the pure chromatic colors are arranged circularly, we can use a graduation from 0 to 360° (Tab. 1).
+	</p>
+	<figure>
+		<table>
+			<tr>
+				<td colspan="2">Color</td>
+				<td>Hue</td>
+			</tr>
+			<tr>
+				<td>Red</td>
+				<td style="background-color: #ff0000; width: 50px;"></td>
+				<td>0°</td>
+			</tr>
+			<tr>
+				<td>Yellow</td>
+				<td style="background-color: #ffff00;"></td>
+				<td>60°</td>
+			</tr>
+			<tr>
+				<td>Green</td>
+				<td style="background-color: #00ff00;"></td>
+				<td>120°</td>
+			</tr>
+			<tr>
+				<td>Cyan</td>
+				<td style="background-color: #00ffff;"></td>
+				<td>180°</td>
+			</tr>
+			<tr>
+				<td>Blue</td>
+				<td style="background-color: #0000ff;"></td>
+				<td>240°</td>
+			</tr>
+			<tr>
+				<td>Magenta</td>
+				<td style="background-color: #ff00ff;"></td>
+				<td>300°</td>
+			</tr>
+			<tr>
+				<td>Red</td>
+				<td style="background-color: #ff0000; width: 50px;"></td>
+				<td>360°</td>
+			</tr>
+		</table>
+		<figcaption>Tab. 1: The six basic pure chromatic colors with their respective Hue values in degree</figcaption>
+	</figure>
+	<h3>
+		The Saturation
+	</h3>
+	<p>
+		The Saturation parameter specifies the degree of the chromaticity.
+		Colors with a low Saturation always tend to a gray scale.
+		If the Saturation equals zero, the Hue no longer has any influence.
+	</p>
+	<h3>
+		The Value
+	</h3>
+	<p>
+		The Value parameter specifies a gray scale and also affects the chromaticity.
+		Pure chromatic colors can only be obtained at Value = 100%.
+		Colors with a low Value always tend to black.
+		If the Value equals zero, the Saturation no longer has any influence.
+	</p>
+	<p>
+		<figure style="float: left;">
+			<img src="CmLibDemo_files/HSV_Cube_Front_View.svg" width="300" height="300" title="HSV cube front view" />
+			<figcaption>Fig. 5: HSV cube front view</figcaption>
+		</figure>
+		<figure>
+			<img src="CmLibDemo_files/HSV_Cube_Back_View.svg" width="300" height="300" title="HSV cube back view" />
+			<figcaption>Fig. 6: HSV cube back view</figcaption>
+		</figure>
+	</p>
+	<h2 id="The HSL Color Model">
+		The HSL Color Model
+	</h2>
+	<table>
+		<tr>
+			<td colspan="2">Parameter</td>
+			<td>Range</td>
+		</tr>
+		<tr>
+			<td>H</td>
+			<td>Hue</td>
+			<td>0 - 360°</td>
+		</tr>
+		<tr>
+			<td>S</td>
+			<td>Saturation</td>
+			<td>0 - 100%</td>
+		</tr>
+		<tr>
+			<td>L</td>
+			<td>Lightness</td>
+			<td>0 - 100%</td>
+		</tr>
+	</table>
+	<h3>
+		The Lightness
+	</h3>
+	<p>
+		The Lightness parameter specifies a gray scale and also affects the chromaticity.
+		Pure chromatic colors can only be obtained at Lightness = 50%.
+		Colors with a low Lightness always tend to black, colors with a high Lightness always tend to white.
+		If the Lightness equals 0 or 100%, the Saturation no longer has any influence.
+	</p>
+	<p>
+		<figure style="float: left;">
+			<img src="CmLibDemo_files/HSL_Cube_Front_View.svg" width="300" height="300" title="HSL cube front view" />
+			<figcaption>Fig. 7: HSL cube front view</figcaption>
+		</figure>
+		<figure>
+			<img src="CmLibDemo_files/HSL_Cube_Back_View.svg" width="300" height="300" title="HSL cube back view" />
+			<figcaption>Fig. 8: HSL cube back view</figcaption>
+		</figure>
+	</p>
+	<h2 id="The HSG Color Model">
+		The HSG Color Model
+	</h2>
+	<table>
+		<tr>
+			<td colspan="2">Parameter</td>
+			<td>Range</td>
+		</tr>
+		<tr>
+			<td>H</td>
+			<td>Hue</td>
+			<td>0 - 360°</td>
+		</tr>
+		<tr>
+			<td>S</td>
+			<td>Saturation</td>
+			<td>0 - 100%</td>
+		</tr>
+		<tr>
+			<td>G</td>
+			<td>Gray Scale</td>
+			<td>0 - 100%</td>
+		</tr>
+	</table>
+	<h3>
+		The Gray Scale
+	</h3>
+	<p>
+		The Gray Scale parameter specifies a gray scale.
+		A color is defined as a mixture of a pure chromatic color and the gray scale, with the Saturation as mixing ratio.
+		If the Saturation equals 0% the Hue isn't considered anymore, if it equals 100% the Gray Scale isn't considered anymore.
+	</p>
+	<p>
+		<figure style="float: left;">
+			<img src="CmLibDemo_files/HSG_Cube_Front_View.svg" width="300" height="300" title="HSG cube front view" />
+			<figcaption>Fig. 9: HSG cube front view</figcaption>
+		</figure>
+		<figure>
+			<img src="CmLibDemo_files/HSG_Cube_Back_View.svg" width="300" height="300" title="HSG cube back view" />
+			<figcaption>Fig. 10: HSG cube back view</figcaption>
+		</figure>
+	</p>
+	<h2 id="Perceived Brightness">
+		The Perceived Brightness
+	</h2>
+	<p>
+		The perceived brightness value approximates the brightness impression in a human eye, caused by a distinctive color.
+		It's calculated from an RGB color using the following weighted average:
+	</p>
+	<p>
+		<img src="CmLibDemo_files/Perceived_Brightness_Formula.svg" />
+	</p>
+	<p>
+		This formula is based on the <a href="https://en.wikipedia.org/wiki/Luminosity_function">luminosity function</a>.
+		Tab. 2 shows that the perceived brightness values of the six basic pure chromatic colors are quite regularly distributed in the range between black and white.
+	</p>
+	<figure>
+		<table>
+			<tr>
+				<td colspan="2">Color</td>
+				<td>P</td>
+			</tr>
+			<tr>
+				<td>Black</td>
+				<td style="background-color: #000000; width: 150px;"></td>
+				<td>0</td>
+			</tr>
+			<tr>
+				<td>Blue</td>
+				<td style="background-color: #0000ff;"></td>
+				<td>11</td>
+			</tr>
+			<tr>
+				<td>Red</td>
+				<td style="background-color: #ff0000; width: 50px;"></td>
+				<td>30</td>
+			</tr>
+			<tr>
+				<td>Magenta</td>
+				<td style="background-color: #ff00ff;"></td>
+				<td>41</td>
+			</tr>
+			<tr>
+				<td>Green</td>
+				<td style="background-color: #00ff00;"></td>
+				<td>59</td>
+			</tr>
+			<tr>
+				<td>Cyan</td>
+				<td style="background-color: #00ffff;"></td>
+				<td>70</td>
+			</tr>
+			<tr>
+				<td>Yellow</td>
+				<td style="background-color: #ffff00;"></td>
+				<td>89</td>
+			</tr>
+			<tr>
+				<td>White</td>
+				<td style="background-color: #ffffff;"></td>
+				<td>100</td>
+			</tr>
+		</table>
+		<figcaption>Tab. 2: The six basic pure chromatic colors sorted by their respective perceived brightness values</figcaption>
+	</figure>
+	<p>
+		The perceived brightness is an important feature of a color, but the above presented color models do not respect this.
+		They do not allow to change a parameter without changing the perceived brightness automatically and they do not allow to alterate the perceived brightness directly.
+	</p>
+	<p>
+		The following section presents HSP, a color model which takes the perceived brightness into account.
+		It works like the HSL color model, except that the third parameter, the Lightness, is replaced by the Perceived Brightness.
+		With this color model you can change the Hue and the Saturation at a constant perceived brightness level.
+		And you can manipulate the perceived brightness directly.
+	</p>
+	<h2 id="The HSP Color Model">
+		The HSP Color Model
+	</h2>
+	<table>
+		<tr>
+			<td colspan="2">Parameter</td>
+			<td>Range</td>
+		</tr>
+		<tr>
+			<td>H</td>
+			<td>Hue</td>
+			<td>0 - 360°</td>
+		</tr>
+		<tr>
+			<td>S</td>
+			<td>Saturation</td>
+			<td>0 - 100%</td>
+		</tr>
+		<tr>
+			<td>P</td>
+			<td>Perceived Brightness</td>
+			<td>0 - 100%</td>
+		</tr>
+	</table>
+	<h3>
+		The Perceived Brightness
+	</h3>
+	<p>
+		The Perceived Brightness parameter specifies a gray scale and also affects the chromaticity.
+		Pure chromatic colors can only be obtained, if the Perceived Brightness equals the perceived brightness value of the corresponding pure chromatic color.
+		Colors with a low Perceived Brightness always tend to black, colors with a high Perceived Brightness always tend to white.
+		If the Perceived Brightness equals 0 or 100%, the Saturation no longer has any influence.
+	</p>
+	<p>
+		<figure style="float: left;">
+			<img src="CmLibDemo_files/HSP_Cube_Front_View.svg" width="300" height="300" title="HSP cube front view" />
+			<figcaption>Fig. 11: HSP cube front view</figcaption>
+		</figure>
+		<figure>
+			<img src="CmLibDemo_files/HSP_Cube_Back_View.svg" width="300" height="300" title="HSP cube back view" />
+			<figcaption>Fig. 12: HSP cube back view</figcaption>
+		</figure>
+	</p>
+	<h2 id="Usage Examples">
+		Usage Examples
+	</h2>
+	<p>
+		My software <a href="http://www.uniograph.com">UnioGraph</a> implements all the presented color models.
+		The following example images have been created with this software.
+	</p>
+	<h3>
+		Color Compositions
+	</h3>
+	<p>
+		Figures 13-15 show color compositions using HSV, HSL and HSP.
+		In horizontal direction the Hue is varied, in vertical direction the respective third parameter.
+		The Saturation of the chromatic colors is always set to 100%.
+		Corresponding gray scales are displayed at the left and right margins.
+	</p>
+	<p>
+		<figure style="float: left;">
+			<img src="CmLibDemo_files/HSV_Color_Composition.png" width="300" height="300" title="HSV color composition" />
+			<figcaption>Fig. 13: HSV color composition</figcaption>
+		</figure>
+		<figure style="float: left;">
+			<img src="CmLibDemo_files/HSL_Color_Composition.png" width="300" height="300" title="HSL color composition" />
+			<figcaption>Fig. 14: HSL color composition</figcaption>
+		</figure>
+		<figure>
+			<img src="CmLibDemo_files/HSP_Color_Composition.png" width="300" height="300" title="HSP color composition" />
+			<figcaption>Fig. 15: HSP color composition</figcaption>
+		</figure>
+	</p>
+	<h3>
+		Variations of the Hue and the Saturation
+	</h3>
+	<p>
+		Figures 16-23 show variations of the Hue and the Saturation using HSL.
+		Each image has its own character in terms of color emphasis, because the variations also change the perceived brightness values.
+		This results were the reason for the development of the HSP color model.
+	</p>
+	<p>
+		<figure style="float: left;">
+			<img src="CmLibDemo_files/HSL_Hue_000.jpg" width="300" height="300" title="HSL Hue = 0°" />
+			<figcaption>Fig. 16: HSL Hue = 0°</figcaption>
+		</figure>
+		<figure style="float: left;">
+			<img src="CmLibDemo_files/HSL_Hue_090.jpg" width="300" height="300" title="HSL Hue = 90°" />
+			<figcaption>Fig. 17: HSL Hue = 90°</figcaption>
+		</figure>
+		<figure style="float: left;">
+			<img src="CmLibDemo_files/HSL_Hue_180.jpg" width="300" height="300" title="HSL Hue = 180°" />
+			<figcaption>Fig. 18: HSL Hue = 180°</figcaption>
+		</figure>
+		<figure>
+			<img src="CmLibDemo_files/HSL_Hue_270.jpg" width="300" height="300" title="HSL Hue = 270°" />
+			<figcaption>Fig. 19: HSL Hue = 270°</figcaption>
+		</figure>
+	</p>
+	<p>
+		<figure style="float: left;">
+			<img src="CmLibDemo_files/HSL_Saturation_100.jpg" width="300" height="300" title="HSL Saturation = 100%" />
+			<figcaption>Fig. 20: HSL Saturation = 100%</figcaption>
+		</figure>
+		<figure style="float: left;">
+			<img src="CmLibDemo_files/HSL_Saturation_066.jpg" width="300" height="300" title="HSL Saturation = 66%" />
+			<figcaption>Fig. 21: HSL Saturation = 66%</figcaption>
+		</figure>
+		<figure style="float: left;">
+			<img src="CmLibDemo_files/HSL_Saturation_033.jpg" width="300" height="300" title="HSL Saturation = 33%" />
+			<figcaption>Fig. 22: HSL Saturation = 33%</figcaption>
+		</figure>
+		<figure>
+			<img src="CmLibDemo_files/HSL_Saturation_000.jpg" width="300" height="300" title="HSL Saturation = 0%" />
+			<figcaption>Fig. 23: HSL Saturation = 0%</figcaption>
+		</figure>
+	</p>
+	<p>
+		Figures 24-31 show the same variations using HSP.
+		Alterations no longer lead to a change of the perceived brightness values, which better preserves the original character of the image.
+	</p>
+	<p>
+		<figure style="float: left;">
+			<img src="CmLibDemo_files/HSP_Hue_000.jpg" width="300" height="300" title="HSP Hue = 0°" />
+			<figcaption>Fig. 24: HSP Hue = 0°</figcaption>
+		</figure>
+		<figure style="float: left;">
+			<img src="CmLibDemo_files/HSP_Hue_090.jpg" width="300" height="300" title="HSP Hue = 90°" />
+			<figcaption>Fig. 25: HSP Hue = 90°</figcaption>
+		</figure>
+		<figure style="float: left;">
+			<img src="CmLibDemo_files/HSP_Hue_180.jpg" width="300" height="300" title="HSP Hue = 180°" />
+			<figcaption>Fig. 26: HSP Hue = 180°</figcaption>
+		</figure>
+		<figure>
+			<img src="CmLibDemo_files/HSP_Hue_270.jpg" width="300" height="300" title="HSP Hue = 270°" />
+			<figcaption>Fig. 27: HSP Hue = 270°</figcaption>
+		</figure>
+	</p>
+	<p>
+		<figure style="float: left;">
+			<img src="CmLibDemo_files/HSP_Saturation_100.jpg" width="300" height="300" title="HSP Saturation = 100%" />
+			<figcaption>Fig. 28: HSP Saturation = 100%</figcaption>
+		</figure>
+		<figure style="float: left;">
+			<img src="CmLibDemo_files/HSP_Saturation_066.jpg" width="300" height="300" title="HSP Saturation = 66%" />
+			<figcaption>Fig. 29: HSP Saturation = 66%</figcaption>
+		</figure>
+		<figure style="float: left;">
+			<img src="CmLibDemo_files/HSP_Saturation_033.jpg" width="300" height="300" title="HSP Saturation = 33%" />
+			<figcaption>Fig. 30: HSP Saturation = 33%</figcaption>
+		</figure>
+		<figure>
+			<img src="CmLibDemo_files/HSP_Saturation_000.jpg" width="300" height="300" title="HSP Saturation = 0%" />
+			<figcaption>Fig. 31: HSP Saturation = 0%</figcaption>
+		</figure>
+	</p>
+	<h3>
+		Image Manipulation
+	</h3>
+	<p>
+		In the project <a href="https://amaurer1.github.io/HspGradator/">HspGradator</a> the presented color models are used for image gradation.
+	</p>
+	<h2 id="Project">
+		Project
+	</h2>
+	<p>
+		The <b>CmLibDemo</b> project was created with Visual Studio Community 2022 using C++ and MFC.
+		Its purpose is the demonstration and visualization of the different color models.
+	</p>
+	<h3>
+		Libraries
+	</h3>
+	<p>
+		The <b>CmLibDemo</b> project introduces the C++ template libraries <b>Color.h</b> and <b>ColorModels.h</b>.
+	</p>
+	<p>
+		All classes and functions use the namespace <b>ama</b>.
+	</p>
+	<p>
+		<b>Color.h</b> contains the generic data structure <b>ama::Color</b> and user defined operators for arithmetic operations with this type.
+	</p>
+	<p>
+		<b>ColorModels.h</b> contains the generic data structures <b>ama::Rgb</b> (an alias for <b>ama::Color</b>),  <b>ama::Hsv</b>, <b>ama::Hsl</b>, <b>ama::Hsg</b> and <b>ama::Hsp</b> and the respective conversion functions to and from <b>ama::Rgb</b>.
+		The data structures can be instantiated with any data type, but if they are used together with the conversion functions, it must be a floating point type.
+		The conversion functions always operate in the range from 0.0 to 1.0 for each parameter of the involved data structures.
+	</p>
+	<p>
+		In the <b>CmLibDemo</b> project all available color model structures are instantiated with the data type <b>double</b> and all available conversion algorithms are used.
+	</p>
+	<h3>
+		Handling
+	</h3>
+	<h4>
+		Image
+	</h4>
+	<p>
+		<b>CmLibDemo</b> calculates the image in the memory before it's displayed on the screen.
+		The size of this image can be changed with Edit > Change Image Size... and it can be saved in various image formats with File > Save Image As...
+	</p>
+	<h4>
+		Diagram mode
+	</h4>
+	<p>
+		<figure>
+			<img src="CmLibDemo_files/CmLibDemo_Diagram_Mode.png" title="CmLibDemo Diagram Mode" />
+			<figcaption>Fig. 32: CmLibDemo diagram mode</figcaption>
+		</figure>
+	</p>
+	<ul>
+		<li>Select a color model in the Diagram section</li>
+		<li>Select one of the parameter, the coordinate system for the diagram is spanned with the two remaining parameters</li>
+		<li>Modify the value of the selected parameter in the edit box, this allows you to move through the color model cube in z-direction</li>
+		<li>The image shows the diagram based on this settings</li>
+	</ul>
+	<p>
+		Figure 32 shows the user interface of the software with an HSP diagram.
+		The Hue runs along the x-axis, the Saturation along the y-axis and the Perceived Brightness along the z-axis.
+		The Perceived Brightness is set to 50%.
+		That means the displayed diagram is located in the mid range of the z-axis, as shown in Figure 33.
+	</p>
+	<p>
+		<figure>
+			<img src="CmLibDemo_files/HSP_Diagram_In_Cube.svg" width="300" height="300" title="HSP diagram in cube" />
+			<figcaption>Fig. 33: HSP diagram in cube</figcaption>
+		</figure>
+	</p>
+	<h4>
+		Contour mode
+	</h4>
+	<p>
+		<figure>
+			<img src="CmLibDemo_files/CmLibDemo_Contour_Mode.png" title="CmLibDemo Contour Mode" />
+			<figcaption>Fig. 34: CmLibDemo contour mode</figcaption>
+		</figure>
+	</p>
+	<ul>
+		<li>The contour mode is based on the settings in the diagram mode</li>
+		<li>Switch it on or off with the Enabled button in the Contour section</li>
+		<li>Select a color model and one of the parameter</li>
+		<li>The image shows the contours which indicate value ranges of the selected contour color model parameter, calculated from the diagram colors</li>
+	</ul>
+	<p>
+		Figure 34 shows the user interface of the software with the contours of the HSG Saturation, based on the HSP diagram in Figure 32.
+	</p>
+	<h3>
+		Download
+	</h3>
+	<p>
+		<a href="https://github.com/amaurer1/CmLibDemo/releases/download/1.0/CmLibDemo.exe">Download <b>CmLibDemo</b></a> (64-Bit executable file)
+	</p>
+	<h3>
+		GitHub
+	</h3>
+	<p>
+		<a href="https://github.com/amaurer1/CmLibDemo">View project on GitHub</a>
+	</p>
+	<h3>
+		License
+	</h3>
+	<p>
+		<b>CmLibDemo</b> is distributed under the <a href="http://www.opensource.org/licenses/mit-license.php">MIT software license</a>.
+	</p>
+	<h3>
+		Literature
+	</h3>
+	<ul>
+		<li>James D. Foley et al: <i>Computer graphics: principles and practice</i>, 2nd ed. in C, Addison-Wesley, 1996, ISBN 0-201-84840-6, p. 584-598.</li>
+		<li>Harald Küppers: <i>Harmonielehre der Farben</i>, 3. Auflage, DuMont Buchverlag, Köln 2000, ISBN 3-7701-2192-9, p. 56-58.</li>
+	</ul>
+	<hr />
+	<a title="CodeCogs.com" href="https://www.codecogs.com">
+		<img src="http://www.codecogs.com/images/logo.gif" border="0"
+			  title="CodeCogs - An Open Source Scientific Library"
+			  alt="Powered by CodeCogs">
+	</a>
+	<p>
+		Copyright © 2020-2024 Adrian Maurer. All Rights reserved.
+	</p>
+</body>
+</html>
