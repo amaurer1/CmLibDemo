@@ -113,10 +113,14 @@ template <class T>
 inline std::wstring convertToString(const T n, const int p = 0)
 requires std::floating_point<T>
 {
-	constexpr int nss = std::numeric_limits<T>::digits10 + 10; // Number string size
+	size_t nss = std::numeric_limits<T>::digits10 + 10; // Number string size
 	std::wstring ns(nss, '\0'); // Number string
-	::swprintf_s(&ns[0], nss, !p ? L"%.0f" : std::format(L"%.{}g", p).data(), n);
-	return ns;
+	if (nss = ::swprintf_s(&ns[0], nss, !p ? L"%.0f" : std::format(L"%.{}g", p).data(), n); nss != -1)
+	{
+		ns.resize(nss);
+		return ns;
+	}
+	return {};
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // TNumberEdit
@@ -148,6 +152,8 @@ private:
 	T calcLimit(const T n) const {return ama::limit(n, limit1, limit2);}
 public:
 	bool isNumberValid() const {return numberValid;}
+	T getLimit1() const {return limit1;}
+	T getLimit2() const {return limit2;}
 	void setLimit1(const T l) {limit1 = l;}
 	void setLimit2(const T l) {limit2 = l;}
 	void removeLimit1() {limit1 = std::numeric_limits<T>::lowest();}
@@ -155,9 +161,12 @@ public:
 	void setLimits(const T, const T);
 	void setLimits(const std::array<T, 2>&);
 	void removeLimits();
+	T getIncrement1() const {return increment1;}
+	T getIncrement2() const {return increment2;}
 	void setIncrement1(const T i) {increment1 = i;}
 	void setIncrement2(const T i) {increment2 = i;}
 	void setIncrements(const T, const T);
+	int getPrecision() const {return precision;}
 	void setPrecision(const int p) {precision = p;}
 	void setNumber(const T, const bool = false);
 	void removeNumber(const bool = false);
@@ -258,7 +267,7 @@ requires number<T>
 inline void TNumberEdit<T>::setNumber(const T n, const bool che)
 {
 	numberValid = true;
-	setText(convertToString(n, precision), che);
+	setText(::convertToString(n, precision), che);
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 template <class T>
@@ -273,7 +282,7 @@ template <class T>
 requires number<T>
 inline T TNumberEdit<T>::getNumber() const
 {
-	return calcLimit(convertToNumber<T>(getText()));
+	return calcLimit(::convertToNumber<T>(getText()));
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 template <class T>
@@ -299,15 +308,15 @@ requires std::integral<T>
 	{
 		using namespace std;
 		const wstring ns(getText()); // Number string
-		if (const T n = convertToNumber<T>(ns); n >= limit1 && n <= limit2) // Number
+		if (const T n = ::convertToNumber<T>(ns); n >= limit1 && n <= limit2) // Number
 		{
 			const T b = !dir ? std::numeric_limits<T>::lowest() : (std::numeric_limits<T>::max)();
 			const T in = !dir ? n < b + is ? b : n - is : n > b - is ? b : n + is; // Incremented number
-			const wstring ins = convertToString(calcLimit(in)); // Incremented number string
+			const wstring ins = ::convertToString(calcLimit(in)); // Incremented number string
 			const DWORD ocp = GetSel();
 			SetRedraw(FALSE);
 			setText(ins, true);
-			const int ncp = static_cast<int>(ins.length()) - (static_cast<int>(ns.length()) - LOWORD(ocp));
+			const int ncp = LOWORD(ocp) + static_cast<int>(ins.size() - ns.size());
 			SetSel(ncp, ncp);
 			SetRedraw(TRUE);
 			Invalidate(FALSE);
@@ -325,13 +334,14 @@ requires std::floating_point<T>
 	{
 		using namespace std;
 		const wstring ns(getText()); // Number string
-		if (const T n = convertToNumber<T>(ns); n >= limit1 && n <= limit2) // Number
+		const T n = ::convertToNumber<T>(ns);
+		if ( n >= limit1 && n <= limit2) // Number
 		{
-			const wstring ins = convertToString(calcLimit(!dir ? n - is : n + is), precision); // Incremented number string
-			const int cp = static_cast<int>(ins.length()) - (static_cast<int>(ns.length()) - LOWORD(GetSel()));
+			const wstring ins = ::convertToString(calcLimit(!dir ? n - is : n + is), precision); // Incremented number string
+			const int ncp = LOWORD(GetSel()) + static_cast<int>(ins.size() - ns.size());
 			SetRedraw(FALSE);
 			setText(ins, true);
-			SetSel(cp, cp);
+			SetSel(ncp, ncp);
 			SetRedraw(TRUE);
 			Invalidate(FALSE);
 			UpdateWindow();
@@ -356,28 +366,32 @@ requires std::floating_point<T>
 	{
 		using namespace std;
 		const wstring ns(getText()); // Number string
-		if (const T n = convertToNumber<T>(ns); n >= limit1 && n <= limit2) // Number
+		const size_t nss = ns.size(); // Number string size
+		if (const T n = ::convertToNumber<T>(ns); n >= limit1 && n <= limit2) // Number
 		{
 			const size_t ep = ::wcscspn(ns.data(), L"eE"); // Exponent position
 			const wstring bs(ns.substr(0, ep)); // Basis string
-			const wstring es(ns.substr(ep, ns.size() - ep)); // Exponent string
+			const wstring es(ns.substr(ep, nss - ep)); // Exponent string
 			const size_t pp = bs.find_first_of('.'); // Point position
 			const size_t p = pp != wstring::npos ? bs.size() - pp - 1 : 0; // Precision
-			const T bn = convertToNumber<T>(bs); // Basis number
+			const T bn = ::convertToNumber<T>(bs); // Basis number
 			const T is = T(1.0) / static_cast<T>(pow(10, p)); // Increment step
 			const T ibn = !dir ? bn - is : bn + is; // Incremented basis number
-			constexpr int inss = numeric_limits<T>::digits10 + 10; // Incremented number string size
+			size_t inss = numeric_limits<T>::digits10 + 10; // Incremented number string size
 			wstring ins(inss, '\0'); // Incremented number string
-			::swprintf_s(&ins[0], inss, format(L"%.{}f%s", p).data(), ibn, es.data());
-			if (const T in = convertToNumber<T>(ins); in >= limit1 && in <= limit2) // Incremented number
+			if (inss = ::swprintf_s(&ins[0], inss, format(L"%.{}f%s", p).data(), ibn, es.data()); inss != -1)
 			{
-				const int cp = static_cast<int>(ins.length()) - (static_cast<int>(ns.length()) - LOWORD(GetSel()));
-				SetRedraw(FALSE);
-				setText(ins, true);
-				SetSel(cp, cp);
-				SetRedraw(TRUE);
-				Invalidate(FALSE);
-				UpdateWindow();
+				ins.resize(inss);
+				if (const T in = ::convertToNumber<T>(ins); in >= limit1 && in <= limit2) // Incremented number
+				{
+					const int ncp = LOWORD(GetSel()) + static_cast<int>(inss - nss);
+					SetRedraw(FALSE);
+					setText(ins, true);
+					SetSel(ncp, ncp);
+					SetRedraw(TRUE);
+					Invalidate(FALSE);
+					UpdateWindow();
+				}
 			}
 		}
 	}
